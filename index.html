@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pardot A/B Test Page (Parent)</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Pardot A/B Test (Single Form via URL Parameter)</h1>
+    <p style="text-align: center;">
+        The form below adjusts randonmly shows either Version A or Version B (with the Company field hidden).
+    </p>
+
+    <p style="text-align: center; font-weight: bold; color: blue;">
+        Parent Page Received Version: <span id="receivedVersion">Waiting...</span>
+    </p>
+
+    <iframe
+        src="https://www3.lenoxsoft.com/l/1039151/2025-05-28/3l5j3b"
+        width="100%"
+        height="1200"
+        type="text/html"
+        frameborder="0"
+        allowTransparency="true"
+        style="border: 0;"
+        title="Pardot A/B Test Form"
+    >
+        Your browser does not support iframes.
+    </iframe>
+
+    <script>
+        const receivedVersionSpan = document.getElementById('receivedVersion');
+
+        window.addEventListener('message', function(event) {
+            // IMPORTANT: Verify the origin for security in a production environment!
+            // event.origin will be 'https://www3.lenoxsoft.com' in your case.
+            // if (event.origin !== 'https://www3.lenoxsoft.com') {
+            //     console.warn('Message received from unexpected origin:', event.origin);
+            //     return;
+            // }
+
+            // Check if the message is the one we sent from the Pardot iframe
+            if (event.data && event.data.type === 'pardot_form_version') {
+                const version = event.data.version;
+                receivedVersionSpan.textContent = version;
+                console.log('Parent Page: Received form version from iframe:', version);
+            }
+        });
+
+        console.log('Parent Page: Listening for messages from iframe...');
+    </script>
+</body>
+</html>
