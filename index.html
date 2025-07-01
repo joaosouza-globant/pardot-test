@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pardot A/B Test Page (Parent)</title>
+    <script>
+        // --- Randomly generate the version on the parent page (executed immediately in head) ---
+        // This script runs as soon as the <head> is parsed, ensuring the iframe src is set very early.
+        const chosenVersion = Math.random() < 0.5 ? 'a' : 'b'; // 50/50 split
+        const basePardotFormUrl = "https://www3.lenoxsoft.com/l/1039151/2025-05-28/3l5j3b";
+        const dynamicIframeSrc = `${basePardotFormUrl}?version=${chosenVersion}`;
+
+        // Store the dynamic src in a global variable or directly apply it if iframe exists
+        // We will apply it to the iframe's src attribute directly in the HTML below.
+        // This variable will be used by the iframe element itself.
+        window.pardotIframeDynamicSrc = dynamicIframeSrc;
+        console.log(`Parent Page: Dynamic iframe src generated: ${dynamicIframeSrc}`);
+    </script>
 </head>
 <body>
     <h1 style="text-align: center;">Pardot A/B Test (Parent Page Randomly Assigns Version)</h1>
@@ -16,10 +29,11 @@
         Parent Page Received Version: <span id="receivedVersion">Waiting...</span>
     </p>
 
-    <!-- Your SINGLE Pardot Form Embed Code (src will be set by JavaScript) -->
+    <!-- Your SINGLE Pardot Form Embed Code -->
+    <!-- The src attribute is now set using the JavaScript variable defined in the head -->
     <iframe
-        id="pardotIframe" <!-- Added an ID to easily select the iframe -->
-        src="" <!-- src will be set dynamically by JavaScript -->
+        id="pardotIframe"
+        src=""
         width="100%"
         height="1200"
         type="text/html"
@@ -32,15 +46,10 @@
     </iframe>
 
     <script>
-        // --- Randomly generate the version on the parent page (executed immediately) ---
-        const chosenVersion = Math.random() < 0.5 ? 'a' : 'b'; // 50/50 split
-        const basePardotFormUrl = "https://www3.lenoxsoft.com/l/1039151/2025-05-28/3l5j3b";
-        const dynamicIframeSrc = `${basePardotFormUrl}?version=${chosenVersion}`;
-
-        // Set the iframe's src as early as possible, even before DOMContentLoaded for the listener
-        // This ensures the iframe starts loading with the correct URL from the very beginning.
-        document.getElementById('pardotIframe').src = dynamicIframeSrc;
-        console.log(`Parent Page: Iframe src set to: ${dynamicIframeSrc}`);
+        // Set the iframe's src immediately after the iframe element is parsed.
+        // This is the earliest possible point to set the src dynamically.
+        document.getElementById('pardotIframe').src = window.pardotIframeDynamicSrc;
+        console.log(`Parent Page: Iframe src applied to element: ${window.pardotIframeDynamicSrc}`);
 
 
         document.addEventListener('DOMContentLoaded', function() {
