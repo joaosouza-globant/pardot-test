@@ -6,17 +6,20 @@
     <title>Pardot A/B Test Page (Parent)</title>
 </head>
 <body>
-    <h1 style="text-align: center;">Pardot A/B Test (Single Form via URL Parameter)</h1>
+    <h1 style="text-align: center;">Pardot A/B Test (Parent Page Randomly Assigns Version)</h1>
     <p style="text-align: center;">
-        The form below adjusts randonmly shows either Version A or Version B (with the Company field hidden).
+        The parent page randomly assigns Version A or B and passes it to the form via the iframe's URL.
     </p>
 
+    <!-- Placeholder to display the version received from iframe -->
     <p style="text-align: center; font-weight: bold; color: blue;">
         Parent Page Received Version: <span id="receivedVersion">Waiting...</span>
     </p>
 
+    <!-- Your SINGLE Pardot Form Embed Code (src will be set by JavaScript) -->
     <iframe
-        src="https://www3.lenoxsoft.com/l/1039151/2025-05-28/3l5j3b/"
+        id="pardotIframe" <!-- Added an ID to easily select the iframe -->
+        src="" <!-- src will be set dynamically by JavaScript -->
         width="100%"
         height="1200"
         type="text/html"
@@ -29,27 +32,42 @@
     </iframe>
 
     <script>
-        
-		
-		const receivedVersionSpan = document.getElementById('receivedVersion');
+        document.addEventListener('DOMContentLoaded', function() {
+            const pardotIframe = document.getElementById('pardotIframe');
+            const receivedVersionSpan = document.getElementById('receivedVersion');
 
-        window.addEventListener('message', function(event) {
-            // IMPORTANT: Verify the origin for security in a production environment!
-            // event.origin will be 'https://www3.lenoxsoft.com' in your case.
-            // if (event.origin !== 'https://www3.lenoxsoft.com') {
-            //     console.warn('Message received from unexpected origin:', event.origin);
-            //     return;
-            // }
+            // --- Randomly generate the version on the parent page ---
+            const chosenVersion = Math.random() < 0.5 ? 'a' : 'b'; // 50/50 split
 
-            // Check if the message is the one we sent from the Pardot iframe
-            if (event.data && event.data.type === 'pardot_form_version') {
-                const version = event.data.version;
-                receivedVersionSpan.textContent = version;
-                console.log('Parent Page: Received form version from iframe:', version);
-            }
+            // Construct the base Pardot form URL
+            const basePardotFormUrl = "https://www3.lenoxsoft.com/l/1039151/2025-05-28/3l5j3b";
+
+            // Set the iframe's src with the chosen version parameter
+            pardotIframe.src = `${basePardotFormUrl}?version=${chosenVersion}`;
+            console.log(`Parent Page: Iframe src set to: ${pardotIframe.src}`);
+
+            // --- Listen for messages from the iframe (Pardot form) ---
+            window.addEventListener('message', function(event) {
+                // IMPORTANT: Verify the origin for security in a production environment!
+                // event.origin will be 'https://www3.lenoxsoft.com' in your case.
+                // if (event.origin !== 'https://www3.lenoxsoft.com') {
+                //     console.warn('Parent Page: Message received from unexpected origin:', event.origin);
+                //     return;
+                // }
+
+                // Check if the message is the one we sent from the Pardot iframe
+                if (event.data && event.data.type === 'pardot_form_version') {
+                    const version = event.data.version;
+                    receivedVersionSpan.textContent = version;
+                    console.log('Parent Page: Received form version from iframe:', version);
+
+                    // You can now use the 'version' variable here for other logic on your parent page!
+                    // For example, trigger an analytics event, change content, etc.
+                }
+            });
+
+            console.log('Parent Page: Listening for messages from iframe...');
         });
-
-        console.log('Parent Page: Listening for messages from iframe...');
     </script>
 </body>
 </html>
