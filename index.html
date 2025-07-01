@@ -4,33 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pardot A/B Test Page (Parent)</title>
-</head>
-<body>
-    <h1 style="text-align: center;">Pardot A/B Test (Parent Page Randomly Assigns Version)</h1>
-    <p style="text-align: center;">
-        The parent page randomly assigns Version A or B and passes it to the form via the iframe's URL.
-    </p>
-
-    <!-- Placeholder to display the version received from iframe -->
-    <p style="text-align: center; font-weight: bold; color: blue;">
-        Parent Page Received Version: <span id="receivedVersion">Waiting...</span>
-    </p>
-
-    <!-- Your SINGLE Pardot Form Embed Code (src will be set by JavaScript) -->
-    <iframe
-        id="pardotIframe" <!-- Added an ID to easily select the iframe -->
-        src="" <!-- src will be set dynamically by JavaScript -->
-        width="100%"
-        height="1200"
-        type="text/html"
-        frameborder="0"
-        allowTransparency="true"
-        style="border: 0;"
-        title="Pardot A/B Test Form"
-    >
-        Your browser does not support iframes.
-    </iframe>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const pardotIframe = document.getElementById('pardotIframe');
@@ -69,5 +42,31 @@
             console.log('Parent Page: Listening for messages from iframe...');
         });
     </script>
+</head>
+<body>
+    <h1 style="text-align: center;">Pardot A/B Test (Parent Page Randomly Assigns Version)</h1>
+    <p style="text-align: center;">
+        The parent page randomly assigns Version A or B and passes it to the form via the iframe's URL.
+    </p>
+
+    <!-- Placeholder to display the version received from iframe -->
+    <p style="text-align: center; font-weight: bold; color: blue;">
+        Parent Page Received Version: <span id="receivedVersion">Waiting...</span>
+    </p>
+
+    <!-- Your SINGLE Pardot Form Embed Code (src will be set by JavaScript) -->
+    <iframe
+        id="pardotIframe" <!-- Added an ID to easily select the iframe -->
+        src="" <!-- src will be set dynamically by JavaScript -->
+        width="100%"
+        height="1200"
+        type="text/html"
+        frameborder="0"
+        allowTransparency="true"
+        style="border: 0;"
+        title="Pardot A/B Test Form"
+    >
+        Your browser does not support iframes.
+    </iframe>
 </body>
 </html>
